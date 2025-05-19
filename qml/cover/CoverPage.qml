@@ -9,7 +9,7 @@ CoverBackground {
         Label {
             id: label
             anchors.horizontalCenter: parent.horizontalCenter
-            text: qsTr("Decibici")
+            text: qsTr("decibici")
         }
 
         Label {

@@ -12,6 +12,7 @@ SOURCES += src/decibici.cpp \
 DISTFILES += qml/decibici.qml \
     qml/cover/CoverPage.qml \
     qml/pages/Main.qml \
+    qml/pages/About.qml \
     rpm/decibici.spec \
     translations/*.ts \
     decibici.desktop
