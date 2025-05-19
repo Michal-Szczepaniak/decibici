@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=decibici
+Exec=decibici
+Name=decibici
+
+[X-Sailjail]
+Sandboxing=Disabled
