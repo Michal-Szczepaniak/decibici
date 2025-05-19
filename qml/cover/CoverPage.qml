@@ -2,21 +2,34 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 CoverBackground {
-    Label {
-        id: label
+    Column {
         anchors.centerIn: parent
-        text: qsTr("My Cover")
+        spacing: Theme.paddingLarge
+
+        Label {
+            id: label
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: qsTr("Decibici")
+        }
+
+        Label {
+            id: status
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: deviceManager.devicePaired ? (deviceManager.deviceConnected ? qsTr("Device connected") : qsTr("Device found")) : qsTr("Device not paired")
+        }
     }
 
     CoverActionList {
         id: coverAction
 
         CoverAction {
-            iconSource: "image://theme/icon-cover-next"
+            iconSource: "image://theme/icon-s-outline-secure"
+            onTriggered: deviceManager.setState(false)
         }
 
         CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
+            iconSource: "image://theme/icon-s-secure"
+            onTriggered: deviceManager.setState(true)
         }
     }
 }

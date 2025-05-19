@@ -4,14 +4,26 @@
 <context>
     <name>CoverPage</name>
     <message>
-        <source>My Cover</source>
+        <source>Decibici</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device not paired</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>FirstPage</name>
+    <name>Main</name>
     <message>
-        <source>Show Page 2</source>
+        <source>Device connected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -28,21 +40,6 @@
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Device connected</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SecondPage</name>
-    <message>
-        <source>Nested Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Item</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
