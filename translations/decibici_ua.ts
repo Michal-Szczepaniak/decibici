@@ -5,69 +5,69 @@
     <name>About</name>
     <message>
         <source>About</source>
-        <translation type="Про програму"></translation>
+        <translation>Про програму</translation>
     </message>
     <message>
         <source>Made by Michał Szczepaniak.</source>
-        <translation type="Створено Міхалом Щепаняком."></translation>
+        <translation>Створено Міхалом Щепаняком.</translation>
     </message>
     <message>
         <source>Licensed under GPLv3</source>
-        <translation type="Ліцензія GPLv3"></translation>
+        <translation>Ліцензія GPLv3</translation>
     </message>
     <message>
         <source>Links</source>
-        <translation type="Посилання"></translation>
+        <translation>Посилання</translation>
     </message>
     <message>
         <source>Donate</source>
-        <translation type="Пожертвувати"></translation>
+        <translation>Пожертвувати</translation>
     </message>
 </context>
 <context>
     <name>CoverPage</name>
     <message>
         <source>Decibici</source>
-        <translation type="Decibici"></translation>
+        <translation>Decibici</translation>
     </message>
     <message>
         <source>Device connected</source>
-        <translation type="Пристрій підключено"></translation>
+        <translation>Пристрій підключено</translation>
     </message>
     <message>
         <source>Device found</source>
-        <translation type="Пристрій знайдено"></translation>
+        <translation>Пристрій знайдено</translation>
     </message>
     <message>
         <source>Device not paired</source>
-        <translation type="Пристрій не спарений"></translation>
+        <translation>Пристрій не спарений</translation>
     </message>
 </context>
 <context>
     <name>Main</name>
     <message>
         <source>Device connected</source>
-        <translation type="Пристрій підключено"></translation>
+        <translation>Пристрій підключено</translation>
     </message>
     <message>
         <source>Device found</source>
-        <translation type="Пристрій знайдено"></translation>
+        <translation>Пристрій знайдено</translation>
     </message>
     <message>
         <source>Device not paired</source>
-        <translation type="Пристрій не спарений"></translation>
+        <translation>Пристрій не спарений</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="Увімкнути"></translation>
+        <translation>Увімкнути</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="Вимкнути"></translation>
+        <translation>Вимкнути</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type="Про програму"></translation>
+        <translation>Про програму</translation>
     </message>
 </context>
 </TS>
