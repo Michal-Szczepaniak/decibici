@@ -1,3 +1,6 @@
 [submodule "qble"]
 	path = qble
 	url = https://github.com/piggz/qble
+[submodule "protopuf"]
+	path = protopuf
+	url = https://github.com/PragmaTwice/protopuf

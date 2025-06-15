@@ -6,6 +6,7 @@
 
 #include <qble/adaptermodel.h>
 #include <qble/bluezadapter.h>
+#include <protopuf/message.h>
 
 int main(int argc, char *argv[])
 {

@@ -27,10 +27,6 @@
 <context>
     <name>CoverPage</name>
     <message>
-        <source>Decibici</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Device connected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -40,6 +36,10 @@
     </message>
     <message>
         <source>Device not paired</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>decibici</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -58,15 +58,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>On</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Locked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unlocked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Registering services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lights off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Battery %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Battery voltage %1V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assistance %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed %1km/h</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

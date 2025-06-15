@@ -1,10 +1,16 @@
 #include "cowboydevice.h"
 #include "onoffservice.h"
+#include "settingsservice.h"
 #include <QDomDocument>
 
 CowboyDevice::CowboyDevice(QObject *parent) : QBLEDevice(parent)
 {
     connect(this, &QBLEDevice::propertiesChanged, this, &CowboyDevice::onPropertiesChanged, Qt::UniqueConnection);
+}
+
+CowboyDevice::~CowboyDevice()
+{
+    QBLEDevice::disconnectFromDevice();
 }
 
 void CowboyDevice::connectToDevice()
@@ -17,7 +23,7 @@ void CowboyDevice::disconnectFromDevice()
     QBLEDevice::disconnectFromDevice();
 }
 
-bool CowboyDevice::connected()
+bool CowboyDevice::connected() const
 {
     return _connected;
 }
@@ -69,10 +75,24 @@ void CowboyDevice::parseServices()
             qDebug() << "Creating service for: " << uuid;
 
             if (uuid == OnOffService::UUID_SERVICE) {
-                addService(uuid, new OnOffService(uuid, path, this));
+                auto service = new OnOffService(uuid, path, this);
+                connect(service, &OnOffService::stateChanged, this, &CowboyDevice::lockedChanged);
+                connect(service, &OnOffService::lightsStateChanged, this, &CowboyDevice::lightsStateChanged);
+                connect(service, &OnOffService::batteryChanged, this, &CowboyDevice::batteryChanged);
+                connect(service, &OnOffService::batteryVoltageChanged, this, &CowboyDevice::batteryVoltageChanged);
+                connect(service, &OnOffService::speedChanged, this, &CowboyDevice::speedChanged);
+                connect(service, &OnOffService::assistanceChanged, this, &CowboyDevice::assistanceChanged);
+                addService(uuid, service);
+                service->readLockState();
+            } else if (uuid == SettingsService::UUID_SERVICE) {
+                auto service = new SettingsService(uuid, path, this);
+                addService(uuid, service);
+                service->readSpeed();
             } else {
                 addService(uuid, new QBLEService(uuid, path, this));
             }
         }
     }
+
+    emit servicesRegistered();
 }

@@ -2,23 +2,30 @@
 #define COWBOYDEVICE_H
 
 #include <qble/qbledevice.h>
-#define COWBOY_UART_WRITE_CHARACTERSTIC BT_UUID_DECLARE_128(BT_UUID_128_ENCODE(0X6E400002, 0XB5A3, 0XF393, 0XE0A9, 0XE50E24DCCA9E))
 
 class CowboyDevice : public QBLEDevice
 {
     Q_OBJECT
 public:
     explicit CowboyDevice(QObject *parent = nullptr);
+    ~CowboyDevice();
 
     void pair() { QBLEDevice::pair(); };
 
     void connectToDevice();
     void disconnectFromDevice();
 
-    bool connected();
+    bool connected() const;
 
 signals:
     void connectedChanged();
+    void servicesRegistered();
+    void lockedChanged(bool locked);
+    void lightsStateChanged(bool state);
+    void batteryChanged(int battery);
+    void batteryVoltageChanged(int batteryVoltage);
+    void speedChanged(int speed);
+    void assistanceChanged(int assistance);
 
 public slots:
     void onPropertiesChanged(const QString &interface, const QVariantMap &map, const QStringList &list);
