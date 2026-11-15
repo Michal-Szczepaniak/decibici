@@ -3,6 +3,8 @@ name: Sailfish OS 5.2 RPM
 on:
   workflow_dispatch:
   push:
+    branches:
+      - master
     tags:
       - 'v*'
 
@@ -24,6 +26,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p output
+          chmod 0777 output # SDK container uses a different unprivileged UID
           docker run --rm --privileged \
             --mount "type=bind,source=${GITHUB_WORKSPACE},target=/share" \
             coderus/sailfishos-platform-sdk:5.2.0.15 \
