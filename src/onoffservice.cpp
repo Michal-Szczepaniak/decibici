@@ -1,5 +1,6 @@
 #include "onoffservice.h"
-#include <protopuf/message.h>
+#include "protobufdecoder.h"
+#include <cstring>
 
 const char* OnOffService::UUID_SERVICE = "c0b0a000-18eb-499d-b266-2f2910744274";
 const char* OnOffService::UUID_UNLOCK_CHARACTERISTIC = "c0b0a001-18eb-499d-b266-2f2910744274";
@@ -81,123 +82,100 @@ void OnOffService::onCharacteristicChanged(const QString &c, const QByteArray &v
     }
 
     if (c == UUID_DASHBOARD_CHARACTERISTIC) {
-        using Dashboard = pp::message<
-            pp::int32_field<"tripId", 1>,
-            pp::int32_field<"duration", 2>,
-            pp::int32_field<"speed", 3>,
-            pp::int32_field<"power", 4>,
-            pp::int32_field<"distance", 5>,
-            pp::int32_field<"battery", 6>,
-            pp::int32_field<"assistance", 7>,
-            pp::int32_field<"lights", 8>,
-            pp::int32_field<"batteryVoltage", 9>,
-            pp::int32_field<"unknown10", 10>,
-            pp::float_field<"batteryTemp", 11>,
-            pp::int32_field<"unknown12", 12>,
-            pp::int32_field<"unknown13", 13>,
-            pp::int32_field<"unknown14", 14>,
-            pp::int32_field<"activeDuration", 15>,
-            pp::int32_field<"movingDuration", 16>,
-            pp::int32_field<"pedalTorque", 17>
-            >;
-
-        std::vector<std::byte> data;
-        for (char byte : value) {
-            data.emplace_back((std::byte)byte);
+        std::vector<protobuf::Field> fields;
+        if (!protobuf::decode(reinterpret_cast<const uint8_t *>(value.constData()),
+                              size_t(value.size()), fields)) {
+            qWarning() << "Ignoring malformed Cowboy dashboard notification:" << value.toHex();
+            return;
         }
-        using namespace pp;
-        auto result = message_coder<Dashboard>::decode((bytes)data);
-        const auto& [dashboard, _] = *result;
 
-        if (dashboard.get<1>().has_value()) {
-            _dashboard.tripId = dashboard.get<1>().value();
+        for (const auto &field : fields) {
+            if (field.number == 11 && field.wireType == 5) {
+                const uint32_t bits = uint32_t(field.value);
+                std::memcpy(&_dashboard.batteryTemp, &bits, sizeof(bits));
+                qDebug() << "batteryTemp: " << _dashboard.batteryTemp;
+                continue;
+            }
+            if (field.wireType != 0) continue;
+            // int32 protobuf fields carry the low 32 bits of a varint.
+            const uint32_t bits = uint32_t(field.value);
+            int32_t number;
+            std::memcpy(&number, &bits, sizeof(number));
+
+            switch (field.number) {
+        case 1:
+            _dashboard.tripId = number;
             qDebug() << "tripId: " << _dashboard.tripId;
-        }
-
-        if (dashboard.get<2>().has_value()) {
-            _dashboard.duration = dashboard.get<2>().value();
+            break;
+        case 2:
+            _dashboard.duration = number;
             qDebug() << "duration: " << _dashboard.duration;
-        }
-
-        if (dashboard.get<3>().has_value()) {
-            _dashboard.speed = dashboard.get<3>().value();
+            break;
+        case 3:
+            _dashboard.speed = number;
             qDebug() << "speed: " << _dashboard.speed;
             emit speedChanged(_dashboard.speed);
-        }
-
-        if (dashboard.get<4>().has_value()) {
-            _dashboard.power = dashboard.get<4>().value();
+            break;
+        case 4:
+            _dashboard.power = number;
             qDebug() << "power: " << _dashboard.power;
             emit powerChanged(_dashboard.power);
-        }
-
-        if (dashboard.get<5>().has_value()) {
-            _dashboard.distance = dashboard.get<5>().value();
+            break;
+        case 5:
+            _dashboard.distance = number;
             qDebug() << "distance: " << _dashboard.distance;
             emit distanceChanged(_dashboard.distance);
-        }
-
-        if (dashboard.get<6>().has_value()) {
-            _dashboard.battery = dashboard.get<6>().value();
+            break;
+        case 6:
+            _dashboard.battery = number;
             qDebug() << "battery: " << _dashboard.battery;
             emit batteryChanged(_dashboard.battery);
-        }
-
-        if (dashboard.get<7>().has_value()) {
-            _dashboard.assistance = dashboard.get<7>().value();
+            break;
+        case 7:
+            _dashboard.assistance = number;
             qDebug() << "assistance: " << _dashboard.assistance;
-        }
-
-        if (dashboard.get<8>().has_value()) {
-            _dashboard.lights = dashboard.get<8>().value();
+            break;
+        case 8:
+            _dashboard.lights = number;
             qDebug() << "lights: " << _dashboard.lights;
             emit lightsStateChanged(_dashboard.lights);
-        }
-
-        if (dashboard.get<9>().has_value()) {
-            _dashboard.batteryVoltage = dashboard.get<9>().value();
+            break;
+        case 9:
+            _dashboard.batteryVoltage = number;
             qDebug() << "batteryVoltage: " << _dashboard.batteryVoltage;
             emit batteryVoltageChanged(_dashboard.batteryVoltage);
-        }
-
-        if (dashboard.get<10>().has_value()) {
-            _dashboard.unknown10 = dashboard.get<10>().value();
+            break;
+        case 10:
+            _dashboard.unknown10 = number;
             qDebug() << "unknown10: " << _dashboard.unknown10;
-        }
-
-        if (dashboard.get<11>().has_value()) {
-            _dashboard.batteryTemp = dashboard.get<11>().value();
-            qDebug() << "batteryTemp: " << _dashboard.batteryTemp;
-        }
-
-        if (dashboard.get<12>().has_value()) {
-            _dashboard.unknown12 = dashboard.get<12>().value();
+            break;
+        case 12:
+            _dashboard.unknown12 = number;
             qDebug() << "unknown12: " << _dashboard.unknown12;
-        }
-
-        if (dashboard.get<13>().has_value()) {
-            _dashboard.unknown13 = dashboard.get<13>().value();
+            break;
+        case 13:
+            _dashboard.unknown13 = number;
             qDebug() << "unknown13: " << _dashboard.unknown13;
-        }
-
-        if (dashboard.get<14>().has_value()) {
-            _dashboard.unknown14 = dashboard.get<14>().value();
+            break;
+        case 14:
+            _dashboard.unknown14 = number;
             qDebug() << "unknown14: " << _dashboard.unknown14;
-        }
-
-        if (dashboard.get<15>().has_value()) {
-            _dashboard.activeDuration = dashboard.get<15>().value();
+            break;
+        case 15:
+            _dashboard.activeDuration = number;
             qDebug() << "activeDuration: " << _dashboard.activeDuration;
-        }
-
-        if (dashboard.get<16>().has_value()) {
-            _dashboard.movingDuration = dashboard.get<16>().value();
+            break;
+        case 16:
+            _dashboard.movingDuration = number;
             qDebug() << "movingDuration: " << _dashboard.movingDuration;
-        }
-
-        if (dashboard.get<17>().has_value()) {
-            _dashboard.pedalTorque = dashboard.get<17>().value();
+            break;
+        case 17:
+            _dashboard.pedalTorque = number;
             qDebug() << "pedalTorque: " << _dashboard.pedalTorque;
+            break;
+        default:
+            break;
+            }
         }
     }
 }
