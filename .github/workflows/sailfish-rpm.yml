@@ -1,0 +1,44 @@
+name: Sailfish OS 5.2 RPM
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build-aarch64:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout including Bluetooth and protobuf dependencies
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build Sailfish OS 5.2 aarch64 RPM
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p output
+          docker run --rm --privileged \
+            --mount "type=bind,source=${GITHUB_WORKSPACE},target=/share" \
+            coderus/sailfishos-platform-sdk:5.2.0.15 \
+            /bin/bash -euc '
+              mkdir -p /tmp/decibici-build
+              cp -a /share/. /tmp/decibici-build/
+              cd /tmp/decibici-build
+              mb2 -t SailfishOS-5.2.0.15-aarch64 build
+              find RPMS -type f -name "*.aarch64.rpm" -print -exec cp -v {} /share/output/ \;
+              test -n "$(find /share/output -name "*.aarch64.rpm" -print -quit)"
+            '
+
+      - name: Upload installable RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: decibici-sailfish-5.2-aarch64
+          path: output/*.aarch64.rpm
+          if-no-files-found: error
