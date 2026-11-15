@@ -33,29 +33,41 @@ void CowboyDevice::onPropertiesChanged(const QString &interface, const QVariantM
     qDebug() << Q_FUNC_INFO << interface << map << list;
 
     if (interface == "org.bluez.Device1") {
-        if (deviceProperty("ServicesResolved").toBool() ) {
-            parseServices();
-        }
         if (map.contains("Connected")) {
             _connected = map["Connected"].toBool();
+            if (!_connected) {
+                _servicesParsed = false;
+                qInfo() << "Bike disconnected; services must be rediscovered";
+            }
             emit connectedChanged();
+        }
+        if (deviceProperty("ServicesResolved").toBool() && !_servicesParsed) {
+            parseServices();
         }
     }
 }
 
 void CowboyDevice::parseServices()
 {
+    if (_servicesParsed) return;
     qDebug() << Q_FUNC_INFO;
 
     QDBusInterface adapterIntro("org.bluez", devicePath(), "org.freedesktop.DBus.Introspectable", QDBusConnection::systemBus(), 0);
     QDBusReply<QString> xml = adapterIntro.call("Introspect");
+    if (!xml.isValid()) {
+        qWarning() << "Could not discover BLE services:" << xml.error().message();
+        return;
+    }
 
     qDebug() << "Resolved services...";
 
     qDebug().noquote() << xml.value();
 
     QDomDocument doc;
-    doc.setContent(xml.value());
+    if (!doc.setContent(xml.value())) {
+        qWarning() << "Invalid BLE service introspection XML";
+        return;
+    }
 
     QDomNodeList nodes = doc.elementsByTagName("node");
 
@@ -94,5 +106,10 @@ void CowboyDevice::parseServices()
         }
     }
 
+    if (!service(OnOffService::UUID_SERVICE) || !service(SettingsService::UUID_SERVICE)) {
+        qWarning() << "Bike services incomplete; cannot enable controls";
+        return;
+    }
+    _servicesParsed = true;
     emit servicesRegistered();
 }
