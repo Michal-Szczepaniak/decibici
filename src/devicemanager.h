@@ -52,6 +52,7 @@ signals:
     void powerChanged(int power);
 
 private:
+    QString findCowboyDevice() const;
     BluezAdapter _adapter;
     CowboyDevice _device;
     bool _servicesRegistered = false;
