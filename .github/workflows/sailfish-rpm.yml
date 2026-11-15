@@ -28,9 +28,10 @@ jobs:
             --mount "type=bind,source=${GITHUB_WORKSPACE},target=/share" \
             coderus/sailfishos-platform-sdk:5.2.0.15 \
             /bin/bash -euc '
-              mkdir -p /tmp/decibici-build
-              cp -a /share/. /tmp/decibici-build/
-              cd /tmp/decibici-build
+              mkdir -p build
+              cp -a /share/. build/
+              cd build
+              test -f rpm/decibici.spec
               mb2 -t SailfishOS-5.2.0.15-aarch64 -s rpm/decibici.spec build
               find RPMS -type f -name "*.aarch64.rpm" -print -exec cp -v {} /share/output/ \;
               test -n "$(find /share/output -name "*.aarch64.rpm" -print -quit)"
