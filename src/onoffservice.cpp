@@ -21,6 +21,11 @@ void OnOffService::readLockState()
 {
     QByteArray packet = readValue(UUID_UNLOCK_CHARACTERISTIC);
 
+    if (packet.isEmpty()) {
+        qWarning() << "Cannot read bike lock state: empty BLE response";
+        return;
+    }
+
     _locked = packet[0] != 0x01;
 
     emit stateChanged(_locked);
@@ -67,6 +72,10 @@ int OnOffService::getPower() const
 void OnOffService::onCharacteristicChanged(const QString &c, const QByteArray &value)
 {
     if (c == UUID_UNLOCK_CHARACTERISTIC) {
+        if (value.isEmpty()) {
+            qWarning() << "Ignoring empty lock state notification";
+            return;
+        }
         _locked = value[0] != 0x01;
         emit stateChanged(_locked);
     }

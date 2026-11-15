@@ -18,6 +18,8 @@ public:
 
 private:
     QByteArray getChecksum(QByteArray in);
+    void writeSettingsPacket(const QByteArray &packet);
+    QString _writeCharacteristicPath;
 };
 
 #endif // SETTINGSSERVICE_H

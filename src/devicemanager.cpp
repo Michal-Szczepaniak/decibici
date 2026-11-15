@@ -78,11 +78,17 @@ bool DeviceManager::getLights() const
 
 void DeviceManager::setLights(bool lights)
 {
-    if (!_device.connected()) return;
+    if (!_device.connected() || !_servicesRegistered) {
+        qWarning() << "Lights command ignored: bike is not ready";
+        return;
+    }
 
     auto service = _device.service(SettingsService::UUID_SERVICE);
 
-    if (service == nullptr) return;
+    if (service == nullptr) {
+        qWarning() << "Lights command ignored: settings service missing";
+        return;
+    }
 
     static_cast<SettingsService*>(service)->setLightsState(lights);
 }
