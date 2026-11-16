@@ -2,7 +2,7 @@ Name:       decibici
 
 Summary:    Cowboy bike app
 Version:    1.1
-Release:    1
+Release:    2
 License:    GPL-3.0
 URL:        http://verdanditeam.com/
 Source0:    %{name}-%{version}.tar.bz2
