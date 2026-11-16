@@ -38,6 +38,19 @@ SettingsService::SettingsService(const QString &uuid, const QString &path, QObje
     }
     if (_writeCharacteristicPath.isEmpty())
         qWarning() << "Settings write characteristic not found:" << UUID_WRITE_CHARACTERISTIC;
+    else {
+        QDBusInterface writeCharacteristic("org.bluez", _writeCharacteristicPath,
+                                          "org.bluez.GattCharacteristic1", QDBusConnection::systemBus());
+        qInfo() << "Settings write characteristic flags:" << writeCharacteristic.property("Flags");
+    }
+
+    // Read the bike's UART response so rejected commands can be diagnosed.
+    connect(this, &QBLEService::characteristicChanged, this,
+            [this](const QString &uuid, const QByteArray &value) {
+        if (uuid.compare(UUID_READ_CHARACTERISTIC, Qt::CaseInsensitive) == 0)
+            qInfo() << "Cowboy UART response:" << value.toHex();
+    });
+    enableNotification(UUID_READ_CHARACTERISTIC);
 }
 
 void SettingsService::readSpeed()
