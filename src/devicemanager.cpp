@@ -1,6 +1,49 @@
 ﻿#include "devicemanager.h"
 #include "onoffservice.h"
 #include "settingsservice.h"
+#include <QDBusInterface>
+#include <QDBusMetaType>
+#include <QDBusObjectPath>
+#include <QDBusReply>
+
+using BluezInterfaces = QMap<QString, QVariantMap>;
+using BluezObjects = QMap<QDBusObjectPath, BluezInterfaces>;
+Q_DECLARE_METATYPE(BluezInterfaces)
+Q_DECLARE_METATYPE(BluezObjects)
+
+QString DeviceManager::findCowboyDevice() const
+{
+    static const bool registered = []() {
+        qDBusRegisterMetaType<BluezInterfaces>();
+        qDBusRegisterMetaType<BluezObjects>();
+        return true;
+    }();
+    Q_UNUSED(registered);
+
+    QDBusInterface manager("org.bluez", "/", "org.freedesktop.DBus.ObjectManager",
+                          QDBusConnection::systemBus());
+    QDBusReply<BluezObjects> reply = manager.call("GetManagedObjects");
+    if (!reply.isValid()) {
+        qWarning() << "BlueZ GetManagedObjects failed:" << reply.error().message();
+        return QString();
+    }
+
+    const BluezObjects objects = reply.value();
+    for (auto it = objects.cbegin(); it != objects.cend(); ++it) {
+        const auto device = it.value().constFind("org.bluez.Device1");
+        if (device == it.value().cend()) continue;
+        const QString name = device->value("Name").toString();
+        const QString alias = device->value("Alias").toString();
+        if (!name.contains("COWBOY", Qt::CaseInsensitive) &&
+            !alias.contains("COWBOY", Qt::CaseInsensitive)) continue;
+
+        qInfo() << "Found Cowboy through BlueZ ObjectManager:" << it.key().path()
+                << "name:" << name << "paired:" << device->value("Paired").toBool();
+        return it.key().path();
+    }
+    qInfo() << "No Cowboy device found among BlueZ managed objects";
+    return QString();
+}
 
 DeviceManager::DeviceManager(QObject *parent) : QObject(parent)
 {
@@ -23,7 +66,8 @@ DeviceManager::DeviceManager(QObject *parent) : QObject(parent)
 
 bool DeviceManager::getDevicePaired()
 {
-    QString devicePath = _adapter.matchDevice("COWBOY");
+    QString devicePath = findCowboyDevice();
+    if (devicePath.isEmpty()) devicePath = _adapter.matchDevice("COWBOY");
 
     if (devicePath != "" && _device.devicePath() == "") {
         _device.setDevicePath(devicePath);
@@ -78,11 +122,17 @@ bool DeviceManager::getLights() const
 
 void DeviceManager::setLights(bool lights)
 {
-    if (!_device.connected()) return;
+    if (!_device.connected() || !_servicesRegistered) {
+        qWarning() << "Lights command ignored: bike is not ready";
+        return;
+    }
 
     auto service = _device.service(SettingsService::UUID_SERVICE);
 
-    if (service == nullptr) return;
+    if (service == nullptr) {
+        qWarning() << "Lights command ignored: settings service missing";
+        return;
+    }
 
     static_cast<SettingsService*>(service)->setLightsState(lights);
 }
@@ -144,7 +194,8 @@ int DeviceManager::getDistance() const
 
 void DeviceManager::connectToDevice()
 {
-    QString devicePath = _adapter.matchDevice("COWBOY");
+    QString devicePath = findCowboyDevice();
+    if (devicePath.isEmpty()) devicePath = _adapter.matchDevice("COWBOY");
 
     if (devicePath != "" && _device.devicePath() == "") {
         _device.setDevicePath(devicePath);

@@ -2,9 +2,7 @@ include(qble/qble.pri)
 
 TARGET = decibici
 
-CONFIG += c++2a sailfishapp
-
-QMAKE_CXXFLAGS += -std=c++2a
+CONFIG += c++17 sailfishapp
 
 SOURCES += src/decibici.cpp \
     src/cowboydevice.cpp \
@@ -32,6 +30,5 @@ HEADERS += \
     src/cowboydevice.h \
     src/devicemanager.h \
     src/onoffservice.h \
+    src/protobufdecoder.h \
     src/settingsservice.h
-
-INCLUDEPATH +=  protopuf/include

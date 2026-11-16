@@ -2,7 +2,7 @@ Name:       decibici
 
 Summary:    Cowboy bike app
 Version:    1.1
-Release:    1
+Release:    3
 License:    GPL-3.0
 URL:        http://verdanditeam.com/
 Source0:    %{name}-%{version}.tar.bz2
@@ -11,6 +11,8 @@ BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5DBus)
+BuildRequires:  pkgconfig(Qt5Xml)
 BuildRequires:  desktop-file-utils
 
 %description

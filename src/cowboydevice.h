@@ -34,6 +34,7 @@ public slots:
 private:
     void parseServices();
     bool _connected = false;
+    bool _servicesParsed = false;
 };
 
 #endif // COWBOYDEVICE_H
