@@ -15,11 +15,11 @@ This repository is a fork of [Michal-Szczepaniak/decibici](https://github.com/Mi
 
 | Platform | Status |
 | --- | --- |
-| Sailfish OS 5.2, Jolla C2 (JP-2601), aarch64 | **Tested**: Bluetooth connection, lock/unlock, and lights |
+| Sailfish OS 5.2, Jolla C2 (JP-2601), aarch64, Cowboy 2 | **Tested**: Bluetooth connection, lock/unlock, and lights |
 | Other Sailfish OS versions and devices | Not verified with this fork |
 | Cowboy bikes other than the bike used for testing | Not verified |
 
-The current tested RPM is **1.1-3**. Compatibility with other bike generations or firmware versions is not guaranteed.
+The current tested RPM is **1.1-3**. The tests were performed with a **Cowboy 2**. Compatibility with other bike generations or firmware versions is not guaranteed.
 
 ## Installation
 
