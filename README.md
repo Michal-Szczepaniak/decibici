@@ -64,11 +64,13 @@ To build locally, use a configured Sailfish OS SDK with the appropriate aarch64 
 
 If the bike is not found, check that it is paired in the phone's Bluetooth settings, nearby, and not already connected to another device. On Sailfish OS 5.2, the app discovers paired devices through BlueZ.
 
-For additional diagnostics, start the app from the terminal:
+For additional diagnostics, close any running instance of decibici, then start it from the terminal and save both standard output and error messages to a log file:
 
 ```sh
-decibici
+decibici 2>&1 | tee ~/decibici.log
 ```
+
+The messages remain visible in the terminal and are also written to `~/decibici.log`. Repeating the command replaces the previous log, so copy an earlier log first if you want to keep it. Connect to the bike, test the lock and lights, and exit the application normally before sharing the log.
 
 The output includes device discovery, service registration, light-command writes, and BLE-UART responses. Avoid publicly posting logs containing Bluetooth device addresses without removing identifying details.
 
