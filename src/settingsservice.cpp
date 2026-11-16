@@ -66,7 +66,8 @@ void SettingsService::setLightsState(bool on)
     packet[7] = 0;
     packet[8] = on;
 
-    QByteArray checksum = getChecksum(packet);
+    // CRC covers the nine-byte command only, not the two CRC placeholders.
+    QByteArray checksum = getChecksum(packet.left(9));
     packet[9] = checksum[0];
     packet[10] = checksum[1];
 
@@ -82,11 +83,13 @@ void SettingsService::writeSettingsPacket(const QByteArray &packet)
     }
     QDBusInterface characteristic("org.bluez", _writeCharacteristicPath,
                                  "org.bluez.GattCharacteristic1", QDBusConnection::systemBus());
-    QDBusMessage reply = characteristic.call("WriteValue", packet, QVariantMap());
+    QVariantMap options;
+    options.insert("type", QStringLiteral("command")); // GATT Write Without Response
+    QDBusMessage reply = characteristic.call("WriteValue", packet, options);
     if (reply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << "Bluetooth WriteValue failed:" << reply.errorName() << reply.errorMessage();
     } else {
-        qInfo() << "Bluetooth WriteValue accepted; awaiting bike state notification";
+        qInfo() << "Bluetooth write command submitted; awaiting bike state notification";
     }
 }
 
