@@ -47,6 +47,15 @@ Page {
             }
 
             Label {
+                text: qsTr("Tests and Modifications by ExPLIT")
+                font.pixelSize: Theme.fontSizeTiny
+                anchors.horizontalCenter: parent.horizontalCenter
+                wrapMode: Text.WordWrap
+                width: parent.width - Theme.paddingLarge*2
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Label {
                 text: qsTr("Licensed under GPLv3")
                 font.pixelSize: Theme.fontSizeSmall
                 anchors.horizontalCenter: parent.horizontalCenter
